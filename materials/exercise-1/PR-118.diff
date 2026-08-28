@@ -1,0 +1,91 @@
+From 8c41f2a9d3e0b7145f6a2c88e1d40b93a7c5e612 Mon Sep 17 00:00:00 2001
+From: dev <dev@callstack.com>
+Date: Mon, 24 Aug 2026 14:22:07 +0200
+Subject: [PATCH] CD-142: enforce category sub-limits on line items
+
+ src/spec.ts               |  4 ++++
+ src/validate.ts           |  2 ++
+ src/validate.test.ts      | 41 +++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 47 insertions(+)
+
+diff --git a/src/spec.ts b/src/spec.ts
+index 3f8a1c2..b91d4e7 100644
+--- a/src/spec.ts
++++ b/src/spec.ts
+@@ -18,6 +18,10 @@ export const BACKDATE_DAYS = 90       // REQ-2.5
+ export const CATEGORIES = ['Travel', 'Meals', 'Accommodation', 'Equipment', 'Other'] as const
+ export type Category = (typeof CATEGORIES)[number]
+ 
++// CD-142 — category sub-limits, REQ-3
++export const MEALS_MAX = 40           // REQ-3.1
++export const EQUIPMENT_DESC_MIN = 30  // REQ-3.2
++
+ export const RECEIPT_REQUIRED_ABOVE = 25   // REQ-4.1
+ export const RECEIPT_MAX_BYTES = 5 * 1024 * 1024        // REQ-4.2
+ export const RECEIPT_TYPES = ['image/png', 'image/jpeg', 'application/pdf']
+
+diff --git a/src/validate.ts b/src/validate.ts
+index 7d2e9b4..c8f0a13 100644
+--- a/src/validate.ts
++++ b/src/validate.ts
+@@ -25,6 +25,8 @@ export function validateLineItem(item: Omit<LineItem, 'id' | 'receipt'>): Errors
+   const d = item.description.trim()
+   if (d.length < S.DESC_MIN || d.length > S.DESC_MAX)
+     e.description = `Description must be ${S.DESC_MIN}–${S.DESC_MAX} characters.`
++  else if (item.category === 'Equipment' && d.length < S.EQUIPMENT_DESC_MIN)
++    e.description = `Equipment needs at least ${S.EQUIPMENT_DESC_MIN} characters.`
+ 
+   if (!Number.isFinite(item.amount) || item.amount < S.AMOUNT_MIN)
+     e.amount = `Amount must be at least ${S.AMOUNT_MIN.toFixed(2)}.`
+
+diff --git a/src/validate.test.ts b/src/validate.test.ts
+new file mode 100644
+index 0000000..a4f7c91
+--- /dev/null
++++ b/src/validate.test.ts
+@@ -0,0 +1,41 @@
++import { describe, expect, it } from 'vitest'
++import * as S from './spec'
++import { validateLineItem } from './validate'
++
++const today = new Date().toISOString().slice(0, 10)
++
++const item = (over: Partial<Parameters<typeof validateLineItem>[0]> = {}) => ({
++  date: today,
++  category: 'Travel' as S.Category,
++  description: 'A perfectly ordinary taxi from the airport',
++  amount: 30,
++  ...over,
++})
++
++describe('CD-142 category sub-limits', () => {
++  it('rejects an Equipment item with too short a description', () => {
++    const e = validateLineItem(item({ category: 'Equipment', description: 'A laptop stand' }))
++    expect(e.description).toBeDefined()
++  })
++
++  it('accepts an Equipment item with a long enough description', () => {
++    const e = validateLineItem(
++      item({
++        category: 'Equipment',
++        description: 'An adjustable aluminium laptop stand for the home office desk',
++      }),
++    )
++    expect(e.description).toBeUndefined()
++  })
++
++  it('leaves categories without a sub-limit unchanged', () => {
++    expect(validateLineItem(item({ category: 'Travel', amount: 120 })).amount).toBeUndefined()
++    expect(validateLineItem(item({ category: 'Other', amount: 120 })).amount).toBeUndefined()
++    expect(
++      validateLineItem(item({ category: 'Accommodation', amount: 120 })).amount,
++    ).toBeUndefined()
++  })
++
++  it('still enforces the general per-item maximum', () => {
++    const e = validateLineItem(item({ amount: S.AMOUNT_MAX + 1 }))
++    expect(e.amount).toBeDefined()
++  })
++})
+-- 
+2.50.1
