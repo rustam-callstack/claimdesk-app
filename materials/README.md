@@ -27,6 +27,21 @@ A laptop, a browser, and the agent setup from Part 1. That is all.
 Exercise 3's materials arrive on the day — they contain information that would spoil
 Exercise 2 if read beforehand.
 
+## Context from other sources
+
+Real QA work pulls context from more than one system, so this workshop does too. Two sources
+outside this repository hold supporting context. Reach them through your agent's Notion and
+Google Drive MCP connections — you need a Callstack account to open them.
+
+| | |
+|---|---|
+| [Claimdesk — product workspace](https://app.notion.com/p/callstack/Claimdesk-product-workspace-workshop-data-4005d027c0f8817a86eaff990659c596) | Notion. The backlog, and links to further documents. Start here. |
+| [QA kickoff notes, 24 Sep 2026](https://docs.google.com/document/d/1qW-Ox4k-Qsujzj8XDN3S8vca6B7ZtSAZIt0ARxBFhdU/edit?tab=t.0) | Google Drive. The decisions taken at the QA kickoff. |
+
+**This repository stays the source of truth.** Tickets, notes and policy documents elsewhere are
+context. Where any of them disagrees with `SPEC.md`, the specification wins: report the
+disagreement, quoting both sources, and leave the decision to Product.
+
 ## Reading ahead
 
 Reading `SPEC.md` in advance is welcome and will not spoil anything. The exercises are about

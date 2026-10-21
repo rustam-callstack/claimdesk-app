@@ -2,6 +2,11 @@
 
 **60 minutes.** You will need `SPEC.md`, `TICKET.md` and `PR-118.diff`.
 
+Context beyond this repository: the backlog in the [Claimdesk product workspace](https://app.notion.com/p/callstack/Claimdesk-product-workspace-workshop-data-4005d027c0f8817a86eaff990659c596) on
+Notion, and the [QA kickoff notes](https://docs.google.com/document/d/1qW-Ox4k-Qsujzj8XDN3S8vca6B7ZtSAZIt0ARxBFhdU/edit?tab=t.0) on Google Drive. Pull both through your agent's MCP
+connections. They are context, not requirements — where either disagrees with `SPEC.md`, report it
+with both quotations and let the specification govern.
+
 Two parts, in order. Do not skip to the checklist.
 
 ---
