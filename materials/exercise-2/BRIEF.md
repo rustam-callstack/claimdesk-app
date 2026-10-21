@@ -2,6 +2,9 @@
 
 **75 minutes.** You will need the running app, `SPEC.md`, and your Exercise 1 checklist.
 
+Context for this round is in the [QA kickoff notes](https://docs.google.com/document/d/1qW-Ox4k-Qsujzj8XDN3S8vca6B7ZtSAZIt0ARxBFhdU/edit?tab=t.0) on Google Drive and the
+[Claimdesk product workspace](https://app.notion.com/p/callstack/Claimdesk-product-workspace-workshop-data-4005d027c0f8817a86eaff990659c596) on Notion. Both are context; `SPEC.md` governs.
+
 The app has defects deliberately planted in it. How many, and how hard they are, you find out
 at scoring — not before.
 
